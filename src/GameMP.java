@@ -3,15 +3,16 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class GameMP extends JFrame{
 	
-	private static final long serialVersionUID = 1L;
 	Random random = new Random();
 	JTextField inputTF = new JTextField();
 	JLabel[] numR = new JLabel[25];
 	JLabel[] numL = new JLabel[25];
-	JLabel leftDone = new JLabel(Intro.userL.toUpperCase()+": "+"0/5");
-	JLabel rightDone = new JLabel(Intro.userR.toUpperCase()+": "+"0/5");
+	JLabel leftDone = new JLabel();
+	JLabel rightDone = new JLabel();
+	JLabel turnL = new JLabel();
 	JButton inputB = new JButton("Enter");		
 	ArrayList<Integer> checkedLH = new ArrayList<Integer>();
 	ArrayList<Integer> checkedRH = new ArrayList<Integer>();
@@ -21,9 +22,9 @@ public class GameMP extends JFrame{
 	int lineDL = 0;
 	int lineDR = 0;
 	boolean diagR1 = false, diagR2 =false, diagL1 =false, diagL2 =false;
+	boolean turnRight;
 	
 	GameMP(){
-		
 		//Frame
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(1400, 800);
@@ -31,7 +32,7 @@ public class GameMP extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.getContentPane().setBackground(Main.darkC);
 		this.setLayout(null);
-		this.setTitle("Bingo");
+		this.setTitle("BINGO");
 		this.getRootPane().setDefaultButton(inputB);
 		this.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("BINGO.png")).getImage());
 		
@@ -48,17 +49,32 @@ public class GameMP extends JFrame{
 		
 		//InputNumber add
 		inputTF.setFont(Main.labelF);
-		inputTF.setBounds((1400-50)/2, 600, 50, 50);
+		inputTF.setBounds(665, 500, 50, 50);
 		inputTF.setHorizontalAlignment(0);
 		inputTF.setBackground(Main.medC);
 		inputTF.setForeground(Main.darkC);
 		inputTF.setBorder(Main.border);
+		int turnN = random.nextInt(2);
+		if(turnN == 0) {
+			turnL.setText("← Turn");
+			turnRight = false;
+		}
+		else {
+			turnL.setText("Turn →");
+			turnRight = true;
+		}
+		turnL.setFont(Main.labelS);
+		turnL.setBounds(620, 650, 140, 50);
+		turnL.setHorizontalAlignment(0);
+		turnL.setForeground(Main.darkC);
+		turnL.setBackground(Main.medC);
+		turnL.setOpaque(true);
 		inputB.setFont(Main.labelF);
 		inputB.setBackground(Main.lightC);
 		inputB.setForeground(Main.darkC);
 		inputB.setBorder(Main.border);
 		inputB.setFocusable(false);
-		inputB.setBounds((1400-150)/2, 680, 150, 50);
+		inputB.setBounds(640, 570, 100, 50);
 		inputB.addActionListener( e -> newNum());
 		leftDone.setBounds(0, 650, 600, 50);
 		leftDone.setHorizontalAlignment(0);
@@ -68,6 +84,12 @@ public class GameMP extends JFrame{
 		rightDone.setFont(Main.labelF);
 		rightDone.setForeground(Main.medC);
 		rightDone.setHorizontalAlignment(0);
+		if(Intro.userL.isEmpty())
+			Intro.userL = "Player 1";
+		if(Intro.userR.isEmpty())
+			Intro.userR = "Player 2";
+		leftDone.setText(Intro.userL.toUpperCase()+": "+"0/5");
+		rightDone.setText(Intro.userR.toUpperCase()+": "+"0/5");
 		
 		//MenuBar
 		JMenuBar menu = new JMenuBar();
@@ -93,7 +115,7 @@ public class GameMP extends JFrame{
 		JMenuItem howPlay = new JMenuItem("How to Play");
 		JMenuItem credit = new JMenuItem("About");
 		howPlay.addActionListener( e -> JOptionPane.showMessageDialog(null,"- First you put a number in the empty field."+"\n- Then you check if you hit a straight number(Horz,vert or Diagonal)."+"\n- When you have 5 straight line you win."));
-		credit.addActionListener( e -> JOptionPane.showMessageDialog(null, "Created by MhmdSAbdlh"));
+		credit.addActionListener( e -> JOptionPane.showMessageDialog(null, "Created & Designed by MhmdSAbdlh ®"));
 		menu.add(file);
 		menu.add(help);
 		help.add(howPlay);
@@ -105,6 +127,7 @@ public class GameMP extends JFrame{
 		this.add(leftDone);
 		this.add(inputB);
 		this.add(inputTF);
+		this.add(turnL);
 		this.add(playerL);
 		this.add(playerR);
 		this.setVisible(true);
@@ -176,7 +199,7 @@ public class GameMP extends JFrame{
 				}
 				else
 					i+=5;
-		}
+			}
 		i=0;
 		while(i<25) {
 			if(!checkedRH.contains(i) && numR[i].getForeground().equals(Main.lightC)&&numR[i].getForeground().equals(numR[i+1].getForeground())&&numR[i].getForeground().equals(numR[i+2].getForeground())&&numR[i].getForeground().equals(numR[i+3].getForeground())&&numR[i].getForeground().equals(numR[i+4].getForeground())){
@@ -265,22 +288,22 @@ public class GameMP extends JFrame{
 	//Check the end of the game
 	private void gameOver() {
 		int actionO=0;
-		String[] messGO = {"New Game","Restart Game","Exit"};
+		String[] messGO = {"RESTART GAME", "MAIN MENU", "EXIT"};
 		if(lineDL>=5 || lineDR>=5) {
 			if(lineDL == lineDR)
 				actionO = JOptionPane.showOptionDialog(this, "No one win, it is a draw!", "Game Over", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, messGO, null);
 			else
 				if(lineDL >= lineDR) 
-					actionO = JOptionPane.showOptionDialog(this, "\" "+Intro.userL.toUpperCase()+"\" beat \""+Intro.userR.toUpperCase()+"\" ("+lineDL+"-"+lineDR+")", "Game Over", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, messGO, null);
+					actionO = JOptionPane.showOptionDialog(this, "\""+Intro.userL.toUpperCase()+"\" beat \""+Intro.userR.toUpperCase()+"\" ("+lineDL+"-"+lineDR+")", "Game Over", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, messGO, null);
 				else
 					if(lineDR >= lineDL)
 						actionO = JOptionPane.showOptionDialog(this, "\""+Intro.userR.toUpperCase()+"\" beat \""+Intro.userL.toUpperCase()+"\" ("+lineDR+"-"+lineDL+")", "Game Over", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, messGO, null);
-			if(actionO == 0) {
+			if(actionO == 1) {
 				this.dispose();
 				new Intro();
 			}
 			else
-				if(actionO ==1) {
+				if(actionO == 0) {
 					this.dispose();
 					new GameMP();
 				}
@@ -291,12 +314,22 @@ public class GameMP extends JFrame{
 
 	//Select new number
 	private void newNum() {
-		inputTF.setSelectionStart(0);
-		inputTF.setSelectionEnd(2);
 		numSelect();
 		checkGame();
 		leftDone.setText(Intro.userL.toUpperCase()+": "+lineDL+"/5");
 		rightDone.setText(Intro.userR.toUpperCase()+": "+lineDR+"/5");
 		gameOver();
+		if(lineDL<5 && lineDR<5) {
+			if(!inputTF.getText().isBlank())
+				if(turnRight) {
+					turnL.setText("←Turn");
+					turnRight = false;
+				}
+				else {
+					turnL.setText("Turn→");
+					turnRight = true;
+				}
+		inputTF.setText("");
+		}
 	}
 }
