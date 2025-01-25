@@ -21,4 +21,8 @@
 ![alt text](https://github.com/MhmdSAbdlh/Bingo-Game/blob/main/preview/bingo-1.png)
 ![alt text](https://github.com/MhmdSAbdlh/Bingo-Game/blob/main/preview/bingo-2.png)
 
+## Download:
+
+[Bingo](https://github.com/MhmdSAbdlh/Bingo-Game/releases/tag/v1.0)
+
 ### Created and designed by Me
